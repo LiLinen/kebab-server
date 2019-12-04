@@ -2,12 +2,24 @@
 
 namespace App\Controller;
 
+use App\Controller\DataProvider\MeatProvider;
+use App\Controller\DataProvider\MeatProviderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MeatController extends AbstractController
 {
+    private $provider;
+
+    /**
+     * @param MeatProviderInterface $meatProvider
+     */
+    public function __construct(MeatProviderInterface $meatProvider)
+    {
+        $this->provider = $meatProvider;
+    }
+
     /**
      * @Route("/meats", name="get_meats", methods={"GET"})
      *
@@ -15,19 +27,6 @@ class MeatController extends AbstractController
      */
     public function getMeats(): JsonResponse
     {
-        return new JsonResponse([
-            [
-                'name' => 'Chicken',
-                'description' => 'Kuk Kuk Daaak!',
-            ],
-            [
-                'name' => 'Pork',
-                'description' => 'Kriu kriu kriu!',
-            ],
-            [
-                'name' => 'Pork & Veal',
-                'description' => 'Lorem Ipsum',
-            ]
-        ]);
+        return new JsonResponse($this->provider->getMeat());
     }
 }
